@@ -1,19 +1,21 @@
 from .account import Account
+from .affiliates import Affiliates
 import hmac
 import hashlib
 import requests
 
-class Private(Account):
+class Private(Account, Affiliates):
 
     def __init__(self, public_key, secret_key):
         self.keys = {
             'public_key': public_key,
             'secret_key': secret_key
         }
+        
     
 
     def sign_request(self, data, secret_key):
-        if isinstance(data, str):
+        if isinstance(data, dict):
             data = data.encode('utf-8')
         if isinstance(secret_key, str):
             secret_key.encode('utf-8')
@@ -29,7 +31,31 @@ class Private(Account):
             raise Exception("You need give an dict object to convert!")
         
     def make_request(self, method, endpoint, data):
+        headers = {
+            'Content-Type': 'application/json',
+            'pub': self.keys['public_key'],
+            'sign': self.sign_request(data, self.keys['secret_key'])
+        }
         if method == 'get':
-            pass
+            req = requests.get(super().base_url+endpoint, json=data, headers=headers)
+            response = req.json()
+            return response
         elif method == 'post':
-            pass
+            req = requests.post(super().base_url+endpoint, json=data, headers=headers)
+            response = req.json()
+            return response            
+        elif method == 'put':
+            req = requests.put(super().base_url+endpoint, json=data, headers=headers)
+            response = req.json()
+            return response
+        elif method == 'patch':
+            req = requests.patch(super().base_url+endpoint, json=data, headers=headers)
+            response = req.json()
+            return response            
+        elif method == 'delete':
+            req = requests.delete(super().base_url+endpoint, json=data, headers=headers)
+            response = req.json()
+            return response
+        else:
+            raise Exception(f'Error: method {method} unsupported!')
+        

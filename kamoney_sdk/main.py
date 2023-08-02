@@ -12,8 +12,9 @@ from .public import Public
 class Kamoney(Public, Private):
 
     def __init__(self, public_key, secret_key):
-        super().__init__(public_key, secret_key)
         self.base_url = 'https://api2.kamoney.com.br/v2'
+        super().__init__(public_key, secret_key)
+
 
 
     
