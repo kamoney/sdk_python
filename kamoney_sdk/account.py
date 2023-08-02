@@ -1,4 +1,3 @@
-import requests
 from .decorators import Private
 
 class Account():
@@ -66,7 +65,7 @@ class Account():
         response = self.make_request('get', '/private/account', {})
         return response
     
-    
+
     # endpoint /private/account/notification
     @Private
     def get_account_notifications(self, id=None) -> dict:
@@ -92,6 +91,5 @@ class Account():
     @Private
     def mark_notifications_as_read(self):
         headers = {}
-        requests.put(f'{self.base_url}/private/account/notification', headers=headers)
         self.make_request('put', '/private/account/notification', {})
         return
