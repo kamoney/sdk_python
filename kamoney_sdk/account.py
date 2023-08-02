@@ -46,8 +46,6 @@ class Account():
     # /private/account/history
     @Private
     def get_account_history(self, page=None, date=None) -> dict:
-        request = requests.get(f'{self.base_url}', headers=headers)
-        response = request.json()
         if page and date:
             body = {
                 'page':page,
@@ -90,6 +88,5 @@ class Account():
     # /private/account/notification
     @Private
     def mark_notifications_as_read(self):
-        headers = {}
         self.make_request('put', '/private/account/notification', {})
         return

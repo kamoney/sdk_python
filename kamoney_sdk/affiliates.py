@@ -1,5 +1,3 @@
-import requests
-
 class Affiliates:
     def __init__(self):
         pass
