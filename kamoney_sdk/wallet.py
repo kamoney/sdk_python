@@ -16,6 +16,16 @@ class Wallet:
     
 
     @Private
-    def get_wallet_extract(self, page=None, begin=None, end=None, search=None, type=None) -> dict:
-        # ...
-        return
+    def get_wallet_extract(self, asset, page=None, begin=None, end=None, search=None, type=None) -> dict:
+        body = {
+            'page': page,
+            'begin': begin,
+            'end': end,
+            'search': search,
+            'type': type
+        }
+        body = self.check_required_params(body)
+        response = self.make_request('get', f'/private/wallet/{asset}/extract')
+        return response
+    
+

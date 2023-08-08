@@ -30,6 +30,17 @@ class Private(Account, Affiliates):
         else:
             raise Exception("You need give an dict object to convert!")
         
+
+    def check_required_params(data):
+        result = data
+        if isinstance(data, dict) == False:
+            raise Exception('check_required_params function need a param of type dict!')
+        for key, value in data.items():
+            if value == None:
+                result.pop(key)
+        return result
+
+
     def make_request(self, method, endpoint, data):
         headers = {
             'Content-Type': 'application/json',
