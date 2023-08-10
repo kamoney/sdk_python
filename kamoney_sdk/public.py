@@ -4,23 +4,32 @@ class Public:
     def __init__(self):
         pass
 
-    ## Services
-    def get_status_order(self) -> dict:
-        request = requests.get(f'{self.base_url}/public/services/order')
-        response = request.json()
-        return response
-
-
-    def get_status_merchant(self) -> dict:
-        request = requests.get(f'{self.base_url}/public/services/merchant')
-        response = request.json()
-        return response
-
-
-    def get_status_buy(self) -> dict:
-        request = requests.get(f'{self.base_url}/public/services/buy')
-        response = request.json()
-        return response
+    def make_request(self, method, endpoint, data):
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        if method == 'get':
+            req = requests.get(super().base_url+endpoint, json=data, headers=headers)
+            response = req.json()
+            return response
+        elif method == 'post':
+            req = requests.post(super().base_url+endpoint, json=data, headers=headers)
+            response = req.json()
+            return response            
+        elif method == 'put':
+            req = requests.put(super().base_url+endpoint, json=data, headers=headers)
+            response = req.json()
+            return response
+        elif method == 'patch':
+            req = requests.patch(super().base_url+endpoint, json=data, headers=headers)
+            response = req.json()
+            return response            
+        elif method == 'delete':
+            req = requests.delete(super().base_url+endpoint, json=data, headers=headers)
+            response = req.json()
+            return response
+        else:
+            raise Exception(f'Error: method {method} unsupported!')
 
 
     ## Authorization
@@ -29,8 +38,8 @@ class Public:
             'email':email,
             'password': password
         }
-        request = requests.get(f'{self.base_url}/public/auth', json=body)
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/auth', body)
+        
         if response['success'] == True:
             self.authorization = response['data']['token']
 
@@ -42,8 +51,8 @@ class Public:
             'token':self.authorization,
             'tfa':tfa
         }
-        request = requests.post(f'{self.base_url}/auth/tfs', json=body)
-        response = request.json()
+        request = self.make_request('post', f'{self.base_url}/auth/tfs', body)
+        
         return response
 
 
@@ -54,9 +63,9 @@ class Public:
             'affiliate_code': afiliate_code,
             'terms': terms
         }
-        request = requests.post(f'{self.base_url}/register', json=body)
-        response = request.json()
-        return response.json()
+        request = self.make_request('post', f'{self.base_url}/register', body)
+        
+        return response
 
 
     def active_account(self, email: str, code: str, password: str):    
@@ -65,8 +74,8 @@ class Public:
             'code': code,
             'password': password
         }
-        request = request.post(f'{self.base_url}/active', json=body)
-        response = request.json()
+        response = self.make_request('post', f'{self.base_url}/active', body)
+        
         return response
 
 
@@ -74,8 +83,7 @@ class Public:
         body = {
             'email': email
         }
-        request = requests.post(f'{self.base_url}/public/recovery', data=body)
-        response = request.response()
+        response = self.make_request('post', f'{self.base_url}/public/recovery', body)
         return response
 
 
@@ -85,68 +93,68 @@ class Public:
             'code': code,
             'password': password
         }
-        request = requests.post(f'{self.base_url}/public/recovery/confirm', data=body)
-        response = request.json()
+        response = self.make_reqquest('post', f'{self.base_url}/public/recovery/confirm', body)
+        
         return response
 
     ## Utils
     def get_bank(self) -> dict:
-        request = requests.get(f'{self.base_url}/public/bank')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/bank')
+        
         return response
 
 
     def get_info(self) -> dict:
-        request = requests.get(f'{self.base_url}/public/system/info')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/system/info')
+        
         return response
 
 
     def get_notification(self) -> dict:
-        request = requests.get(f'{self.base_url}/public/notification')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/notification')
+        
         return response
 
 
     def get_country(self) -> dict:
-        request = requests.get(f'{self.base_url}/public/country')
-        response = request.json()
-        return response.json()
+        response = self.make_request('get',  f'{self.base_url}/public/country')
+        
+        return response
 
 
     def get_state(self, country_id: int) -> dict:
-        request = requests.get(f'{self.base_url}/public/country/{country_id}/state')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/country/{country_id}/state')
+        
         return response
 
 
     def get_city(self, country_id: int, state_id: int) -> dict:
-        request = requests.get(f'{self.base_url}/public/country/{country_id}/state/{state_id}/city')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/country/{country_id}/state/{state_id}/city')
+        
         return response
 
 
     def get_currency(self) -> dict:
-        request = requests.get(f'{self.base_url}/public/currency')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/currency')
+        
         return response
 
 
     def get_network(self, asset: str) -> dict:
-        request = requests.get(f'{self.base_url}/public/{asset}')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/{asset}')
+        
         return response
 
 
     def get_faq(self) -> dict:
-        request = requests.get(f'{self.base_url}/public/faq')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/faq')
+        
         return response
 
 
     def get_product(self) -> dict:
-        request = requests.get(f'{self.base_url}/public/product')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/product')
+        
         return response
 
 
@@ -157,75 +165,75 @@ class Public:
             'subject': subject,
             'message': message
         }
-        request = requests.post(f'{self.base_url}/public/contact', data=body)
-        response = request.json()
+        response = self.make_request('post', f'{self.base_url}/public/contact', body)
+        
         return response
 
 
     def get_pix_types(self) -> dict:
-        request = requests.get(f'{self.base_url}/public/pixtype')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/pixtype')
+        
         return response
 
 
     def get_affiliate(self) -> dict:
-        request = requests.get(f'{self.base_url}/public/affiliate')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/affiliate')
+        
         return response
 
 
     def get_status(self) -> dict:
-        request = requests.get(f'{self.base_url}/public/status')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/status')
+        
         return response
 
 
     def get_coupon(self, coupon: str) -> dict:
-        request = requests.get(f'{self.base_url}/public/coupon/{coupon}')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/coupon/{coupon}')
+        
         return response
 
 
     def get_fee(self) -> dict:
-        request = requests.get(f'{self.base_url}/public/fee')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/fee')
+        
         return response
 
 
     def get_buy_wallet_types(self) -> dict:
-        request = requests.get(f'{self.base_url}/public/buy/wallet/type')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/buy/wallet/type')
+        
         return response
 
 
     def get_buy_payment_category(self) -> dict:
-        request = requests.get(f'{self.base_url}/public/buy/payment/category')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/buy/payment/category')
+        
         return response
 
 
     def get_buy_payment_category_types(self, code: str) -> dict:
-        request = requests.get(f'{self.base_url}/public/buy/payment/category/{code}')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/buy/payment/category/{code}')
+        
         return response
 
 
     def get_reward(self) -> dict:
-        request = requests.get(f'{self.base_url}/public/reward')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/reward')
+        
         return response
 
 
     #Payment Link
     def get_payment_link(self, hash: str) -> dict:
-        request = requests.get(f'{self.base_url}/public/merchant/payment/{hash}')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/merchant/payment/{hash}')
+        
         return response
 
 
     def create_payment_link(self, hash: str) -> dict:
         request =  requests.post(f'{self.base_url}/public/merchant/paymentlink/{hash}')
-        response = request.json()
+        
         return response
 
 
@@ -240,12 +248,12 @@ class Public:
             'additional_info': additional_info,
             'redirect': redirect
         }
-        request = requests.post(f'{self.base_url}/public/merchant/checkout', data=body)
-        response = request.json()
+        request = self.make_request('post', f'{self.base_url}/public/merchant/checkout', body)
+        
         return response
 
 
     def get_checkout_info(self, id: str):
-        request = requests.get(f'{self.base_url}/public/merchant/{id}')
-        response = request.json()
+        response = self.make_request('get',  f'{self.base_url}/public/merchant/{id}')
+        
         return response  

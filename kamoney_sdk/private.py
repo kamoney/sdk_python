@@ -1,10 +1,24 @@
-from .account import Account
-from .affiliates import Affiliates
+from .endpoints_private.account import Account
+from .endpoints_private.affiliates import Affiliates
+from .endpoints_private.api import Api
+from .endpoints_private.auth import Auth
+from .endpoints_private.buy import Buy
+from .endpoints_private.fee_and_reward import Fee_And_Reward
+from .endpoints_private.level import Level
+from .endpoints_private.merchant import Merchant
+from .endpoints_private.order import Order
+from .endpoints_private.payment_link import PaymentLink
+from .endpoints_private.recipients import Recipients
+from .endpoints_private.security import Security
+from .endpoints_private.wallet import Wallet
+from .endpoints_private.withdraw import Withdraw
+
 import hmac
 import hashlib
 import requests
 
-class Private(Account, Affiliates):
+class Private(Account, Affiliates, Api, Auth, Buy, Fee_And_Reward, Level, Merchant,
+              Order, PaymentLink, Recipients, Security, Wallet, Withdraw):
 
     def __init__(self, public_key, secret_key):
         self.keys = {

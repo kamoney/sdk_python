@@ -1,4 +1,4 @@
-from .decorators import Private
+from ..utils.decorators import Private
 
 class Account():
     def __init__(self):

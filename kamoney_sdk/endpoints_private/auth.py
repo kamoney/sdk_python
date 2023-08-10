@@ -1,5 +1,5 @@
 import requests
-from .decorators import Private
+from ..utils.decorators import Private
 class Auth:
     def __init__(self): pass
 
