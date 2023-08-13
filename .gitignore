@@ -1,4 +1,5 @@
 setup.py
 kamoney_sdk/__pycache__/
+main.py
 venv/
 

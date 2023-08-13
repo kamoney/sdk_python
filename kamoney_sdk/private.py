@@ -16,6 +16,7 @@ from .endpoints_private.withdraw import Withdraw
 import hmac
 import hashlib
 import requests
+import random
 
 class Private(Account, Affiliates, Api, Auth, Buy, Fee_And_Reward, Level, Merchant,
               Order, PaymentLink, Recipients, Security, Wallet, Withdraw):
@@ -23,29 +24,32 @@ class Private(Account, Affiliates, Api, Auth, Buy, Fee_And_Reward, Level, Mercha
     def __init__(self, public_key, secret_key):
         self.keys = {
             'public_key': public_key,
-            'secret_key': secret_key
+            'private_key': secret_key
         }
         
     
 
     def sign_request(self, data, secret_key):
-        if isinstance(data, dict):
-            data = data.encode('utf-8')
-        if isinstance(secret_key, str):
-            secret_key.encode('utf-8')
-        sign = hmac.new(secret_key, self.convert_to_query_string(data), hashlib.sha512).hexdigest()
+        query_string = self.convert_to_query_string(data).encode()
+        secret_key = secret_key.encode()
+        sign = hmac.new(secret_key, query_string, hashlib.sha512).hexdigest()
         return sign
 
 
-    def convert_to_query_string(params):
+    def convert_to_query_string(self, params):
+        nonce = round( ((random.random() * 1000) % 1000) ) # PRNG temporário
         if isinstance(params, dict):
             query_string = "&".join([f"{key}={value.replace(' ', '+')}" for key, value in params.items()])
+            query_string = query_string + f'&nonce={nonce}'
+            query_string = query_string[1:]
+            print(f'nonce: {nonce}')
+            print(f'query_string: {query_string}')
             return query_string
         else:
             raise Exception("You need give an dict object to convert!")
         
 
-    def check_required_params(data):
+    def check_required_params(self, data):
         result = data
         if isinstance(data, dict) == False:
             raise Exception('check_required_params function need a param of type dict!')
@@ -59,10 +63,10 @@ class Private(Account, Affiliates, Api, Auth, Buy, Fee_And_Reward, Level, Mercha
         headers = {
             'Content-Type': 'application/json',
             'pub': self.keys['public_key'],
-            'sign': self.sign_request(data, self.keys['secret_key'])
+            'sign': self.sign_request(data, self.keys['private_key'])
         }
         if method == 'get':
-            req = requests.get(super().base_url+endpoint, json=data, headers=headers)
+            req = requests.get(self.base_url+endpoint, headers=headers)
             response = req.json()
             return response
         elif method == 'post':

@@ -53,7 +53,7 @@ class Account():
             }
             response = self.make_request('get', '/private/account/history', body)
         else:
-            response = self.make_request('post', '/private/account/history', {})
+            response = self.make_request('get', '/private/account/history', {})
         return response
     
 

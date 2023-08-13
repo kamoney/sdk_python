@@ -5,15 +5,15 @@ class Services:
 
 
     def get_status_order(self) -> dict:
-        response = self.make_request('get', f'{self.base_url}/public/services/order')
+        response = self.make_request('get', f'/public/services/order')
         return response
 
 
     def get_status_merchant(self) -> dict:
-        response = self.make_request('get', f'{self.base_url}/public/services/merchant')
+        response = self.make_request('get', f'/public/services/merchant')
         return response
 
 
     def get_status_buy(self) -> dict:
-        response = self.make_request('get', f'{self.base_url}/public/services/buy')
+        response = self.make_request('get', f'/public/services/buy')
         return response
